@@ -15,14 +15,14 @@ API_HASH = config("API_HASH", default=None)
 SESSION = config("SESSION")
 FROM_ = config("FROM_CHANNEL")
 TO_ = config("TO_CHANNEL")
-REPLACEUSERNAMW = config("REPLACEUSERNAME")
+REPLACEUSERNAME = config("REPLACEUSERNAME")
 
 FROM = [int(i) for i in FROM_.split()]
 TO = [int(i) for i in TO_.split()]
 
 try:
-    Client = TelegramClient(StringSession(SESSION), APP_ID, API_HASH)
-    Client.start()
+    BotzHubUser = TelegramClient(StringSession(SESSION), APP_ID, API_HASH)
+    BotzHubUser.start()
 except Exception as ap:
     print(f"ERROR - {ap}")
     exit(1)
@@ -32,7 +32,7 @@ except Exception as ap:
 
 
 
-@client.on(events.NewMessage(outgoing=False))
+@BotzHubUser.on(events.NewMessage(outgoing=False))
 async def my_event_handler(event):
     if event.chat_id in FROM:
         clipboard = str(event.raw_text)
@@ -44,8 +44,8 @@ async def my_event_handler(event):
             if "@" in i or "t.me" in i:
                 clipboard = clipboard.replace(i, REPLACEUSERNAME)
         for channel in TO:
-            await client.send_message(channel, clipboard)
+            await BotzHubUser.send_message(channel, clipboard)
 
 print("Bot has started.")
-Client.run_until_disconnected()
+BotzHubUser.run_until_disconnected()
 
